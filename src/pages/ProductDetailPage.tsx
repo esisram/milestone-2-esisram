@@ -1,43 +1,53 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
 import axios from 'axios'
 
-// Define the structure of a product
 interface Product {
   id: number
-  title: string
-  description: string
+  name: string
   price: number
+  description: string
   image: string
 }
 
 const ProductDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const { addToCart } = useCart()
-  const [product, setProduct] = useState<Product | null>(null) // Use the Product interface
+  const { id } = useParams()
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://fakeapi.platzi.com/products/${id}`)
+        const response = await axios.get(`https://fake-api.platzi.com/products/${id}`)
         setProduct(response.data)
-      } catch (error) {
-        console.error('Failed to fetch product:', error)
+      } catch (err) {
+        setError('Failed to fetch product details.')
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchProduct()
   }, [id])
 
-  if (!product) return <p>Loading...</p>
-
   return (
     <div>
-      <h2>{product.title}</h2>
-      <p>{product.description}</p>
-      <p>Price: ${product.price}</p>
-      <button onClick={() => addToCart({ ...product, quantity: 1 })}>Add to Cart</button>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className='text-red-500'>{error}</p>
+      ) : product ? (
+        <div>
+          <h2 className='text-2xl font-bold mb-4'>{product.name}</h2>
+          <img src={product.image} alt={product.name} className='w-full h-64 object-cover mb-4' />
+          <p className='text-lg mb-4'>{product.description}</p>
+          <p className='text-xl font-bold'>${product.price}</p>
+          <button className='bg-blue-500 text-white px-4 py-2 mt-4'>Add to Cart</button>
+        </div>
+      ) : (
+        <p>Product not found.</p>
+      )}
     </div>
   )
 }

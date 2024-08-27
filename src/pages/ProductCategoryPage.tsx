@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import axios from 'axios'
 
 interface Product {
@@ -6,18 +7,18 @@ interface Product {
   name: string
   price: number
   image: string
-  category: string
 }
 
-const ProductListingPage: React.FC = () => {
+const ProductCategoryPage: React.FC = () => {
+  const { category } = useParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsByCategory = async () => {
       try {
-        const response = await axios.get('https://api.escuelajs.co/api/v1/products')
+        const response = await axios.get(`https://fake-api.platzi.com/products?category=${category}`)
         setProducts(response.data)
       } catch (err) {
         setError('Failed to fetch products.')
@@ -26,12 +27,12 @@ const ProductListingPage: React.FC = () => {
       }
     }
 
-    fetchProducts()
-  }, [])
+    fetchProductsByCategory()
+  }, [category])
 
   return (
     <div>
-      <h2 className='text-2xl font-bold mb-4'>Product Listing</h2>
+      <h2 className='text-2xl font-bold mb-4'>Products in Category: {category}</h2>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -54,4 +55,4 @@ const ProductListingPage: React.FC = () => {
   )
 }
 
-export default ProductListingPage
+export default ProductCategoryPage

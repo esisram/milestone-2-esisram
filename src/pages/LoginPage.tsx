@@ -1,36 +1,77 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
 
-const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+// Define TypeScript type for form data
+interface LoginFormData {
+  email: string
+  password: string
+}
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+// Validation schema for login form
+const schema = yup.object().shape({
+  email: yup.string().email('Invalid email format').required('Email is required'),
+  password: yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required')
+})
+
+const LoginPage: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(schema),
+    mode: 'onTouched'
+  })
+
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
-      const response = await axios.post('https://fakeapi.platzi.com/auth/login', {
-        email,
-        password
-      })
-      console.log(response.data)
-      // Save token and redirect
+      const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data)
+      console.log('Login successful:', response.data)
+      // Handle successful login, e.g., redirect to another page
     } catch (error) {
       console.error('Login failed:', error)
+      // Handle login failure, e.g., show an error message
     }
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email' required />
-      <input
-        type='password'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder='Password'
-        required
-      />
-      <button type='submit'>Login</button>
-    </form>
+    <div className='flex items-center justify-center h-screen'>
+      <div className='bg-white p-6 rounded-lg shadow-md w-full lg:max-w-md'>
+        <h2 className='text-2xl font-bold mb-4'>Login</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='mb-4'>
+            <label className='block font-medium mb-2 text-gray-700' htmlFor='email'>
+              Email Address
+            </label>
+            <input
+              type='email'
+              id='email'
+              {...register('email')}
+              className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-400'} p-2`}
+            />
+            {errors.email && <p className='text-red-500'>{errors.email.message}</p>}
+          </div>
+          <div className='mb-4'>
+            <label className='block font-medium mb-2 text-gray-700' htmlFor='password'>
+              Password
+            </label>
+            <input
+              type='password'
+              id='password'
+              {...register('password')}
+              className={`w-full border ${errors.password ? 'border-red-500' : 'border-gray-400'} p-2`}
+            />
+            {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
+          </div>
+          <button type='submit' className='bg-blue-500 text-white py-2 px-4 rounded-lg'>
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
   )
 }
 
