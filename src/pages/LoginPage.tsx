@@ -1,24 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../App' // Use the custom hook instead of direct context
 
-// Define TypeScript type for form data
 interface LoginFormData {
   email: string
   password: string
 }
 
-// Validation schema for login form
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email format').required('Email is required'),
   password: yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required')
 })
 
 const LoginPage: React.FC = () => {
-  const navigate = useNavigate() // Hook to programmatically navigate
   const {
     register,
     handleSubmit,
@@ -28,13 +26,15 @@ const LoginPage: React.FC = () => {
     mode: 'onTouched'
   })
 
+  const navigate = useNavigate()
+  const { setUser } = useUser() // Use the custom hook to access context
+
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data)
       console.log('Login successful:', response.data)
-
-      // Redirect to the ProductListingPage upon successful login
-      navigate('/products')
+      setUser(response.data.email) // Set the username in the context
+      navigate('/products') // Redirect to ProductListingPage
     } catch (error) {
       console.error('Login failed:', error)
       // Handle login failure, e.g., show an error message
