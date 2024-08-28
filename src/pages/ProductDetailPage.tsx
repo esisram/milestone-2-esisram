@@ -4,14 +4,17 @@ import axios from 'axios'
 
 interface Product {
   id: number
-  name: string
+  title: string
   price: number
   description: string
-  image: string
+  images: string[]
+  category: {
+    name: string // Category name
+  }
 }
 
 const ProductDetailPage: React.FC = () => {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
@@ -32,18 +35,26 @@ const ProductDetailPage: React.FC = () => {
   }, [id])
 
   return (
-    <div>
+    <div className='p-4'>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p className='text-red-500'>{error}</p>
       ) : product ? (
-        <div>
-          <h2 className='text-2xl font-bold mb-4'>{product.name}</h2>
-          <img src={product.image} alt={product.name} className='w-full h-64 object-cover mb-4' />
-          <p className='text-lg mb-4'>{product.description}</p>
-          <p className='text-xl font-bold'>${product.price}</p>
-          <button className='bg-blue-500 text-white px-4 py-2 mt-4'>Add to Cart</button>
+        <div className='flex flex-col md:flex-row items-start mb-4'>
+          <img
+            src={product.images[0]} // Use the first image
+            alt={product.title}
+            className='w-[350px] h-[350px] object-cover mb-4 md:mb-0' // Set image size and cover
+          />
+          <div className='md:ml-4'>
+            <h2 className='text-4xl font-bold mb-4'>{product.title}</h2> {/* Increase font size */}
+            <p className='text-xl mb-4'>{product.description}</p> {/* Increase font size */}
+            <p className='text-3xl font-bold mb-4'>${product.price}</p> {/* Increase font size */}
+            <p className='text-2xl font-semibold mb-4'>Category: {product.category.name}</p> {/* Increase font size */}
+            <button className='bg-blue-500 text-white px-6 py-3 mt-4 text-xl'>Add to Cart</button>{' '}
+            {/* Adjust button text size */}
+          </div>
         </div>
       ) : (
         <p>Product not found.</p>

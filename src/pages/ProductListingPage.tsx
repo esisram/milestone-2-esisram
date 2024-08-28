@@ -5,13 +5,10 @@ interface Product {
   id: number
   title: string
   price: number
-  description: string
-  category: {
-    id: number
-    name: string
-    image: string
-  }
   images: string[]
+  category: {
+    name: string
+  }
 }
 
 const ProductListingPage: React.FC = () => {
@@ -36,7 +33,7 @@ const ProductListingPage: React.FC = () => {
 
   return (
     <div className='p-4'>
-      <h2 className='text-2xl font-bold mb-4'>Product Listing</h2>
+      <h2 className='text-2xl font-bold mb-4'>Ayo lihat-lihat Product Kami</h2>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -44,18 +41,18 @@ const ProductListingPage: React.FC = () => {
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {products.map((product) => (
-            <div key={product.id} className='border p-4 rounded-lg shadow-md'>
-              <img src={product.images[0]} alt={product.title} className='w-full h-48 object-cover mb-2 rounded-lg' />
-              <h3 className='text-lg font-medium mb-2'>{product.title}</h3>
-              <p className='text-xl font-bold mb-2'>${product.price.toFixed(2)}</p>
-              <p className='text-gray-600 mb-2'>{product.description}</p>
-              <div className='text-gray-500 text-sm mb-4'>Category: {product.category.name}</div>
-              <a
-                href={`/products/${product.id}`}
-                className='bg-blue-500 text-white px-4 py-2 rounded-lg inline-block text-center'
-              >
-                View Details
-              </a>
+            <div key={product.id} className='border p-4 flex flex-col items-center'>
+              <img
+                src={product.images[0]} // Use the first image
+                alt={product.title}
+                className='w-full h-[200px] object-cover mb-2' // Adjust image size and cover
+              />
+              <h3 className='text-xl font-medium mb-1'>{product.title}</h3>
+              <p className='text-lg mb-2'>${product.price}</p>
+              <p className='text-sm mb-2'>Category: {product.category.name}</p>
+              <button className='bg-blue-500 text-white px-4 py-2'>
+                <a href={`/products/${product.id}`}>View Details</a>
+              </button>
             </div>
           ))}
         </div>
