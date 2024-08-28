@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import LoginPage from './pages/LoginPage'
 import ProductListingPage from './pages/ProductListingPage'
 import ProductCategoryPage from './pages/ProductCategoryPage'
 import ProductDetailPage from './pages/ProductDetailPage'
@@ -41,12 +41,12 @@ const App: React.FC = () => {
             <Route path='/products/category/:category' element={<ProductCategoryPage />} />
             <Route path='/products/:id' element={<ProductDetailPage />} />
             <Route path='/cart' element={<CartPage />} />
-            <Route path='/' element={<div className='text-center p-6'>Welcome to the App!</div>} />
+            <Route path='/' element={<div className='text-center p-6'>Welcome to the Esis Online Store!</div>} />
           </Routes>
         </main>
 
         <footer className='bg-gray-800 text-white text-center p-4'>
-          <p>&copy; 2024 Your Company. All rights reserved.</p>
+          <p>&copy; 2024 Esis Online Store. Dont'Copy.</p>
         </footer>
       </div>
     </Router>

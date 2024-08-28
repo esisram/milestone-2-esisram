@@ -19,7 +19,7 @@ const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://fake-api.platzi.com/products/${id}`)
+        const response = await axios.get(`https://api.escuelajs.co/api/v1/products/${id}`)
         setProduct(response.data)
       } catch (err) {
         setError('Failed to fetch product details.')

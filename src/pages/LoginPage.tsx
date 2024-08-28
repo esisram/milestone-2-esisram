@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 // Define TypeScript type for form data
 interface LoginFormData {
@@ -17,6 +18,7 @@ const schema = yup.object().shape({
 })
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate() // Hook to programmatically navigate
   const {
     register,
     handleSubmit,
@@ -30,7 +32,9 @@ const LoginPage: React.FC = () => {
     try {
       const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data)
       console.log('Login successful:', response.data)
-      // Handle successful login, e.g., redirect to another page
+
+      // Redirect to the ProductListingPage upon successful login
+      navigate('/products')
     } catch (error) {
       console.error('Login failed:', error)
       // Handle login failure, e.g., show an error message
