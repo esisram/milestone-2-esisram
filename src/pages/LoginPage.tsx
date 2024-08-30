@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
+// src/pages/LoginPage.tsx
+import React from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useUser } from '../App' // Use the custom hook instead of direct context
+import { useUser } from '../UserContext' // Correct import path
 
 interface LoginFormData {
   email: string
