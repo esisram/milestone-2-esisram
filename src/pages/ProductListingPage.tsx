@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Product from '../components/Product'
 
 interface Product {
   id: number
@@ -21,6 +22,7 @@ const ProductListingPage: React.FC = () => {
       try {
         const response = await axios.get('https://api.escuelajs.co/api/v1/products')
         setProducts(response.data)
+        console.log(response.data)
       } catch (err) {
         setError('Failed to fetch products.')
       } finally {
@@ -41,19 +43,14 @@ const ProductListingPage: React.FC = () => {
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {products.map((product) => (
-            <div key={product.id} className='border p-4 flex flex-col items-center'>
-              <img
-                src={product.images[0]} // Use the first image
-                alt={product.title}
-                className='w-full h-[200px] object-cover mb-2' // Adjust image size and cover
-              />
-              <h3 className='text-xl font-medium mb-1'>{product.title}</h3>
-              <p className='text-lg mb-2'>${product.price}</p>
-              <p className='text-sm mb-2'>Category: {product.category.name}</p>
-              <button className='bg-blue-500 text-white px-4 py-2'>
-                <a href={`/products/${product.id}`}>View Details</a>
-              </button>
-            </div>
+            <Product
+              key={product.id}
+              id={product.id}
+              name={product.title}
+              price={product.price}
+              image={product.images[0]}
+              categoryName={product.category.name}
+            />
           ))}
         </div>
       )}

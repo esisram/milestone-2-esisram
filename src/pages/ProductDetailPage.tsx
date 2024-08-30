@@ -9,7 +9,7 @@ interface Product {
   description: string
   images: string[]
   category: {
-    name: string // Category name
+    name: string
   }
 }
 
@@ -43,17 +43,16 @@ const ProductDetailPage: React.FC = () => {
       ) : product ? (
         <div className='flex flex-col md:flex-row items-start mb-4'>
           <img
-            src={product.images[0]} // Use the first image
+            src={product.images[0] || 'https://via.placeholder.com/350'} // Fallback image
             alt={product.title}
-            className='w-[350px] h-[350px] object-cover mb-4 md:mb-0' // Set image size and cover
+            className='w-[350px] h-[350px] object-cover mb-4 md:mb-0'
           />
           <div className='md:ml-4'>
-            <h2 className='text-4xl font-bold mb-4'>{product.title}</h2> {/* Increase font size */}
-            <p className='text-xl mb-4'>{product.description}</p> {/* Increase font size */}
-            <p className='text-3xl font-bold mb-4'>${product.price}</p> {/* Increase font size */}
-            <p className='text-2xl font-semibold mb-4'>Category: {product.category.name}</p> {/* Increase font size */}
-            <button className='bg-blue-500 text-white px-6 py-3 mt-4 text-xl'>Add to Cart</button>{' '}
-            {/* Adjust button text size */}
+            <h2 className='text-4xl font-bold mb-4'>{product.title}</h2>
+            <p className='text-xl mb-4'>{product.description}</p>
+            <p className='text-3xl font-bold mb-4'>${product.price}</p>
+            <p className='text-2xl font-semibold mb-4'>Category: {product.category.name}</p>
+            <button className='bg-blue-500 text-white px-6 py-3 mt-4 text-xl'>Add to Cart</button>
           </div>
         </div>
       ) : (
