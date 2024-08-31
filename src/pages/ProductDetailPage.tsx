@@ -43,7 +43,7 @@ const ProductDetailPage: React.FC = () => {
       ) : product ? (
         <div className='flex flex-col md:flex-row items-start mb-4'>
           <img
-            src={product.images[0] || 'https://via.placeholder.com/350'} // Fallback image
+            src={product.images[0] || 'https://via.placeholder.com/350'}
             alt={product.title}
             className='w-[350px] h-[350px] object-cover mb-4 md:mb-0'
           />

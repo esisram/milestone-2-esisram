@@ -4,7 +4,7 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useUser } from '../App' // Use the custom hook instead of direct context
+import { useUser } from '../App'
 
 interface LoginFormData {
   email: string
@@ -27,14 +27,14 @@ const LoginPage: React.FC = () => {
   })
 
   const navigate = useNavigate()
-  const { setUser } = useUser() // Use the custom hook to access context
+  const { setUser } = useUser()
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data)
       console.log('Login successful:', response.data)
-      setUser(response.data.email) // Set the username in the context
-      navigate('/products') // Redirect to ProductListingPage
+      setUser(response.data.email)
+      navigate('/products')
     } catch (error) {
       console.error('Login failed:', error)
       // Handle login failure, e.g., show an error message

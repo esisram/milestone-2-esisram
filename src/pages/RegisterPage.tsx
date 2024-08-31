@@ -3,9 +3,8 @@ import { useForm, FormProvider, Resolver } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom' // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom'
 
-// Define TypeScript types for form data
 interface FormDataStep1 {
   name: string
   email: string
@@ -29,7 +28,6 @@ interface FormData extends FormDataStep1, FormDataStep2, FormDataStep3 {
   avatar: string
 }
 
-// Validation schemas for each step
 const step1Schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().email('Invalid email format').required('Email is required'),
@@ -69,8 +67,8 @@ const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>('')
   const [successMessage, setSuccessMessage] = useState<string>('')
-  const [userInfo, setUserInfo] = useState<FormData | null>(null) // State for user info
-  const navigate = useNavigate() // useNavigate for navigation
+  const [userInfo, setUserInfo] = useState<FormData | null>(null)
+  const navigate = useNavigate()
 
   const methods = useForm<FormData>({
     resolver: yupResolver(getSchema(step)) as Resolver<FormData>,
@@ -94,15 +92,14 @@ const RegisterPage: React.FC = () => {
     setLoading(true)
     setError('')
     setSuccessMessage('')
-    setUserInfo(null) // Clear previous user info
+    setUserInfo(null)
 
-    // Format the data according to API requirements
     const formattedData = {
       email: data.email,
       password: data.password,
       name: data.name,
-      role: 'customer', // Assuming default role
-      avatar: 'https://i.imgur.com/LDOO4Qs.jpg' // Default avatar image
+      role: 'customer',
+      avatar: 'https://i.imgur.com/LDOO4Qs.jpg'
     }
 
     try {
@@ -126,16 +123,13 @@ const RegisterPage: React.FC = () => {
         city: data.city,
         state: data.state,
         zip: data.zip
-      }) // Set user info
+      })
     } catch (error: any) {
       if (error.response) {
-        // Server-side error
         setError(`Failed to register: ${error.response.data.message || error.response.statusText}`)
       } else if (error.request) {
-        // Request was made but no response
         setError('Failed to register: No response from server')
       } else {
-        // Other errors
         setError(`Failed to register: ${error.message}`)
       }
       console.error('Error registering user:', error)
@@ -147,10 +141,9 @@ const RegisterPage: React.FC = () => {
   useEffect(() => {
     if (successMessage && userInfo) {
       const timer = setTimeout(() => {
-        navigate('/login') // Navigate to LoginPage after 5 seconds
+        navigate('/login')
       }, 5000)
 
-      // Cleanup the timer if component unmounts
       return () => clearTimeout(timer)
     }
   }, [successMessage, userInfo, navigate])

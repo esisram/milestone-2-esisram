@@ -10,7 +10,6 @@ interface CartItem {
 const CartPage: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([])
 
-  // Example function to handle adding/removing items
   const handleRemoveFromCart = (id: number) => {
     setCart(cart.filter((item) => item.id !== id))
   }

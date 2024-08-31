@@ -1,9 +1,9 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useUser } from '../App' // Import the custom hook
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const Navbar: React.FC = () => {
-  const { user } = useUser()
+  const { user } = useUser();
 
   return (
     <nav className='bg-gray-800 p-4'>
@@ -24,11 +24,11 @@ const Navbar: React.FC = () => {
           <Link to='/cart' className='text-white px-4'>
             Cart
           </Link>
-          {user && <span className='text-white px-4'>Welcome, {user}</span>}
+          {user && <span className='text-white px-4'>Welcome, {user.name}</span>}
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

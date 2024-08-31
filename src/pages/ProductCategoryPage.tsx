@@ -18,7 +18,6 @@ const ProductCategoryPage: React.FC = () => {
   useEffect(() => {
     const fetchProductsByCategory = async () => {
       try {
-        // Pastikan URL API benar
         const response = await axios.get(`https://api.escuelajs.co/api/v1/products?category=${category}`)
         setProducts(response.data)
       } catch (err) {
@@ -43,7 +42,7 @@ const ProductCategoryPage: React.FC = () => {
           {products.map((product) => (
             <div key={product.id} className='border p-4'>
               <img
-                src={product.image || 'https://via.placeholder.com/150'} // Fallback image
+                src={product.image || 'https://via.placeholder.com/150'}
                 alt={product.name}
                 className='w-full h-48 object-cover mb-2'
               />
