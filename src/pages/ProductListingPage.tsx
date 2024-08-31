@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProductComponent from '../components/Product'; // Renamed import to avoid conflict
+import ProductComponent from '../components/Product';
 
-// Renamed interface to avoid conflict
 interface ProductData {
   id: number;
   title: string;
@@ -84,7 +83,7 @@ const ProductListingPage: React.FC = () => {
               id={product.id}
               name={product.title}
               price={product.price}
-              image={product.images[0] || 'https://via.placeholder.com/150'} // Use first image or placeholder
+              image={product.images[0] || 'https://via.placeholder.com/150'}
               categoryName={product.category.name}
             />
           ))}
