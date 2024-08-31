@@ -1,82 +1,61 @@
-import React from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { useUser } from '../App'
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 interface LoginFormData {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
-const schema = yup.object().shape({
-  email: yup.string().email('Invalid email format').required('Email is required'),
-  password: yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required')
-})
-
 const LoginPage: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<LoginFormData>({
-    resolver: yupResolver(schema),
-    mode: 'onTouched'
-  })
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+  const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  const navigate = useNavigate()
-  const { setUser } = useUser()
-
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data)
-      console.log('Login successful:', response.data)
-      setUser(response.data.email)
-      navigate('/products')
+      const response = await axios.post('https://api.escuelajs.co/api/v1/auth/login', data);
+      setUser(response.data.user);
+      navigate('/products');
     } catch (error) {
-      console.error('Login failed:', error)
-      // Handle login failure, e.g., show an error message
+      console.error('Error logging in:', error);
     }
-  }
+  };
 
   return (
     <div className='flex items-center justify-center h-screen'>
       <div className='bg-white p-6 rounded-lg shadow-md w-full lg:max-w-md'>
-        <h2 className='text-2xl font-bold mb-4'>Login</h2>
+        <h2 className='text-xl font-bold mb-4'>Login</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-4'>
-            <label className='block font-medium mb-2 text-gray-700' htmlFor='email'>
-              Email Address
-            </label>
+            <label htmlFor='email' className='block text-gray-700'>Email</label>
             <input
               type='email'
               id='email'
-              {...register('email')}
-              className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-400'} p-2`}
+              {...register('email', { required: 'Email is required' })}
+              className='w-full border p-2'
             />
             {errors.email && <p className='text-red-500'>{errors.email.message}</p>}
           </div>
           <div className='mb-4'>
-            <label className='block font-medium mb-2 text-gray-700' htmlFor='password'>
-              Password
-            </label>
+            <label htmlFor='password' className='block text-gray-700'>Password</label>
             <input
               type='password'
               id='password'
-              {...register('password')}
-              className={`w-full border ${errors.password ? 'border-red-500' : 'border-gray-400'} p-2`}
+              {...register('password', { required: 'Password is required' })}
+              className='w-full border p-2'
             />
             {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
           </div>
-          <button type='submit' className='bg-blue-500 text-white py-2 px-4 rounded-lg'>
+          <button type='submit' className='bg-blue-500 text-white px-4 py-2 rounded'>
             Login
           </button>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

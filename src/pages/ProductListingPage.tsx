@@ -1,63 +1,64 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import Product from '../components/Product'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import ProductComponent from '../components/Product'; // Renamed import to avoid conflict
 
-interface Product {
-  id: number
-  title: string
-  price: number
-  images: string[]
+// Renamed interface to avoid conflict
+interface ProductData {
+  id: number;
+  title: string;
+  price: number;
+  images: string[];
   category: {
-    name: string
-    image: string
-  }
+    name: string;
+    image: string;
+  };
 }
 
 interface Category {
-  id: number
-  name: string
-  image: string
+  id: number;
+  name: string;
+  image: string;
 }
 
 const ProductListingPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string>('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [products, setProducts] = useState<ProductData[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://api.escuelajs.co/api/v1/products')
-        setProducts(response.data)
+        const response = await axios.get('https://api.escuelajs.co/api/v1/products');
+        setProducts(response.data);
       } catch (err) {
-        setError('Failed to fetch products.')
+        setError('Failed to fetch products.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('https://api.escuelajs.co/api/v1/categories')
-        setCategories(response.data)
+        const response = await axios.get('https://api.escuelajs.co/api/v1/categories');
+        setCategories(response.data);
       } catch (err) {
-        setError('Failed to fetch categories.')
+        setError('Failed to fetch categories.');
       }
-    }
+    };
 
-    fetchProducts()
-    fetchCategories()
-  }, [])
+    fetchProducts();
+    fetchCategories();
+  }, []);
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(event.target.value)
-  }
+    setSelectedCategory(event.target.value);
+  };
 
   const filteredProducts = products.filter(product =>
     selectedCategory ? product.category.name === selectedCategory : true
-  )
+  );
 
   return (
     <div className='p-4'>
@@ -78,19 +79,19 @@ const ProductListingPage: React.FC = () => {
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
           {filteredProducts.map(product => (
-            <Product
+            <ProductComponent
               key={product.id}
               id={product.id}
               name={product.title}
               price={product.price}
-              image={product.category.image || 'https://via.placeholder.com/150'}
+              image={product.images[0] || 'https://via.placeholder.com/150'} // Use first image or placeholder
               categoryName={product.category.name}
             />
           ))}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductListingPage
+export default ProductListingPage;
