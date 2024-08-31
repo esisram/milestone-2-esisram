@@ -1,38 +1,52 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useCart } from '../context/CartContext';
 
 interface Product {
-  id: number
-  title: string
-  price: number
-  description: string
-  images: string[]
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  images: string[];
   category: {
-    name: string
-  }
+    name: string;
+    image: string;
+  };
 }
 
 const ProductDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const [product, setProduct] = useState<Product | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string>('')
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`https://api.escuelajs.co/api/v1/products/${id}`)
-        setProduct(response.data)
+        const response = await axios.get(`https://api.escuelajs.co/api/v1/products/${id}`);
+        setProduct(response.data);
       } catch (err) {
-        setError('Failed to fetch product details.')
+        setError('Failed to fetch product.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchProduct()
-  }, [id])
+    fetchProduct();
+  }, [id]);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart({
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        quantity: 1,
+      });
+    }
+  };
 
   return (
     <div className='p-4'>
@@ -41,25 +55,23 @@ const ProductDetailPage: React.FC = () => {
       ) : error ? (
         <p className='text-red-500'>{error}</p>
       ) : product ? (
-        <div className='flex flex-col md:flex-row items-start mb-4'>
-          <img
-            src={product.images[0] || 'https://via.placeholder.com/350'}
-            alt={product.title}
-            className='w-[350px] h-[350px] object-cover mb-4 md:mb-0'
-          />
-          <div className='md:ml-4'>
-            <h2 className='text-4xl font-bold mb-4'>{product.title}</h2>
-            <p className='text-xl mb-4'>{product.description}</p>
-            <p className='text-3xl font-bold mb-4'>${product.price}</p>
-            <p className='text-2xl font-semibold mb-4'>Category: {product.category.name}</p>
-            <button className='bg-blue-500 text-white px-6 py-3 mt-4 text-xl'>Add to Cart</button>
-          </div>
+        <div>
+          <h2 className='text-2xl font-bold'>{product.title}</h2>
+          <img src={product.images[0] || 'https://via.placeholder.com/300'} alt={product.title} className='w-full max-w-md' />
+          <p className='mt-4'>{product.description}</p>
+          <p className='mt-4 font-bold'>${product.price}</p>
+          <button
+            onClick={handleAddToCart}
+            className='mt-4 bg-blue-500 text-white px-4 py-2 rounded'
+          >
+            Add to Cart
+          </button>
         </div>
       ) : (
         <p>Product not found.</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductDetailPage
+export default ProductDetailPage;

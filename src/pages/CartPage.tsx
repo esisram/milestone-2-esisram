@@ -1,51 +1,41 @@
-import React, { useState } from 'react'
-
-interface CartItem {
-  id: number
-  name: string
-  price: number
-  quantity: number
-}
+import React from 'react';
+import { useCart } from '../context/CartContext';
 
 const CartPage: React.FC = () => {
-  const [cart, setCart] = useState<CartItem[]>([])
-
-  const handleRemoveFromCart = (id: number) => {
-    setCart(cart.filter((item) => item.id !== id))
-  }
-
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const { cart, removeFromCart, updateQuantity } = useCart();
 
   return (
-    <div>
-      <h2 className='text-2xl font-bold mb-4'>Shopping Cart</h2>
+    <div className='p-4'>
+      <h2 className='text-2xl font-bold mb-4'>Your Cart</h2>
       {cart.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
-        <div>
-          <ul>
-            {cart.map((item) => (
-              <li key={item.id} className='flex justify-between items-center mb-2'>
-                <span>
-                  {item.name} (x{item.quantity})
-                </span>
-                <span>${item.price * item.quantity}</span>
+        <ul>
+          {cart.map((item) => (
+            <li key={item.id} className='mb-4'>
+              <div className='flex justify-between items-center'>
+                <span>{item.name}</span>
+                <span>${item.price}</span>
+                <input
+                  type='number'
+                  min='1'
+                  value={item.quantity}
+                  onChange={(e) => updateQuantity(item.id, Number(e.target.value))}
+                  className='w-16 border p-1'
+                />
                 <button
-                  className='bg-red-500 text-white px-2 py-1 rounded'
-                  onClick={() => handleRemoveFromCart(item.id)}
+                  onClick={() => removeFromCart(item.id)}
+                  className='bg-red-500 text-white px-4 py-2 rounded'
                 >
                   Remove
                 </button>
-              </li>
-            ))}
-          </ul>
-          <div className='mt-4'>
-            <h3 className='text-lg font-bold'>Total: ${total}</h3>
-          </div>
-        </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CartPage
+export default CartPage;
