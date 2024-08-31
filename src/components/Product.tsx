@@ -5,14 +5,18 @@ interface ProductProps {
   id: number
   name: string
   price: number
-  image: string
+  image: string // This should be the URL to the image
   categoryName: string
 }
 
 const Product: React.FC<ProductProps> = ({ id, name, price, image, categoryName }) => {
   return (
     <div className='border p-4'>
-      <img src={image} alt={name} className='w-full h-60 object-cover mb-2' />
+      <img
+        src={image || 'https://via.placeholder.com/150'}
+        alt={name}
+        className='w-full h-60 object-cover mb-2'
+      />
       <h2 className='text-lg font-medium'>{name}</h2>
       <p className='text-gray-600'>{categoryName}</p>
       <p className='text-xl font-bold'>${price}</p>
